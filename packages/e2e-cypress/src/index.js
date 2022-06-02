@@ -45,7 +45,46 @@ module.exports = async function (api) {
       // https://github.com/vuejs/vue-cli/issues/1363#issuecomment-405352542
       // https://github.com/akoidan/vue-webpack-typescript
 
-        api.chainWebpack(config => {
+      api.extendWebpack((cfg, { isClient, isServer }, api) => {
+        cfg.module.rules.push({
+          test: /\.ts$/,
+          use: [{
+            loader: 'babel-loader',
+            options: {
+              presets: [['babel-preset-typescript-vue', { onlyRemoveTypeImports: true}]],
+              plugins: [
+                "@babel/plugin-proposal-optional-chaining",
+                "@babel/plugin-proposal-numeric-separator",
+                "@babel/plugin-proposal-nullish-coalescing-operator",
+                ["@babel/plugin-proposal-decorators", {"legacy": true}],
+                ["@babel/plugin-proposal-class-properties", {"loose": true}],
+                ['istanbul'],
+              ],
+              babelrc: false,
+            },
+          }],
+        });
+        cfg.module.rules.push({
+          exclude: /node_modules/,
+          test: /\.vue$/,
+          loader: 'vue-loader',
+        });
+        cfg.module.rules.push({
+          test: /\.js$|\.vue$|\.ts$/,
+          use: {
+            loader: 'istanbul-instrumenter-loader',
+            options: {
+              esModules: true,
+              produceSourceMap: true,
+              fixWebpackSourcePaths: true
+            }
+          },
+          enforce: 'post',
+          exclude: /node_modules|\.spec\.js$/,
+        });
+      });
+
+        /*api.chainWebpack(config => {
             config.module
                 .rule('ts')
                 .test(/\.js$|\.ts$|\.vue$|\.jsx$/)
@@ -56,7 +95,7 @@ module.exports = async function (api) {
                     .loader('istanbul-instrumenter-loader')
                     .options({esModules: true})
                     .before("ts-loader");
-        });
+        });*/
 
       /*api.extendWebpack((cfg) => {
         cfg.module.rules.push({

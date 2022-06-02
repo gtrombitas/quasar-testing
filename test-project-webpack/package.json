@@ -25,7 +25,7 @@
     "test:e2e:ci": "cross-env NODE_ENV=test start-test \"quasar dev\" http-get://localhost:8080 \"cypress run\"",
     "test:component": "cross-env NODE_ENV=test cypress open-ct",
     "test:component:ci": "cross-env NODE_ENV=test cypress run-ct",
-    "run:dev": "cross-env NODE_ENV=test \"quasar dev --debug\""
+    "run:dev": "NODE_ENV=test quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -47,7 +47,6 @@
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
-    "babel-plugin-istanbul": "^6.1.1",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-cypress": "^2.11.3",
