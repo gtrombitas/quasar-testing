@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -28,3 +29,11 @@
 // Imports Quasar Cypress AE predefined commands
 import { registerCommands } from '@quasar/quasar-app-extension-testing-e2e-cypress';
 registerCommands();
+
+Cypress.Commands.add('assertCalledTimes', (alias, timesCalled) => {
+  cy.state('requests').filter(call => console.log(`Call ${call.alias}`));
+  expect(
+    cy.state('requests').filter(call => call.alias === alias),
+    `${alias} should have been called ${timesCalled} times`
+  ).to.have.length(timesCalled);
+});

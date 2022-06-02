@@ -44,6 +44,31 @@ module.exports = async function (api) {
       // See https://www.npmjs.com/package/istanbul-instrumenter-loader
       // https://github.com/vuejs/vue-cli/issues/1363#issuecomment-405352542
       // https://github.com/akoidan/vue-webpack-typescript
+
+        api.chainWebpack(config => {
+            config.module
+                .rule('ts')
+                .test(/\.js$|\.ts$|\.vue$|\.jsx$/)
+                .exclude
+                    .add(/quasar|node_modules|\.spec\.js$/)
+                    .end()
+                .use('istanbul')
+                    .loader('istanbul-instrumenter-loader')
+                    .options({esModules: true})
+                    .before("ts-loader");
+        });
+
+      /*api.extendWebpack((cfg) => {
+        cfg.module.rules.push({
+          test: /\.js$|\.ts$|\.vue$|\.jsx$/,
+          use: {
+            loader: 'istanbul-instrumenter-loader',
+            options: { esModules: true },
+          },
+          enforce: 'post',
+          exclude: /quasar|node_modules|\.spec\.js$/,
+        })
+      })*/
     }
   }
 };

@@ -16,12 +16,14 @@ import { injectDevServer } from '@quasar/quasar-app-extension-testing-e2e-cypres
 
 
 const pluginConfig: Cypress.PluginConfig = async (on, config) => {
-  
+
   // Enable component testing, you can safely remove this
   // if you don't plan to use Cypress for component tests
   if (config.testingType === 'component') {
     await injectDevServer(on, config);
   }
+
+  require('@cypress/code-coverage/task')(on, config);
 
   return config;
 };
