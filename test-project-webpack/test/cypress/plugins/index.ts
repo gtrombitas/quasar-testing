@@ -13,10 +13,34 @@
 // the project's config changing)
 
 import { injectDevServer } from '@quasar/quasar-app-extension-testing-e2e-cypress/cct-dev-server';
+const wp = require('@cypress/webpack-preprocessor');
 
+const webpackOptions = {
+  resolve: {
+    extensions: ['.ts', '.js']
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: [/node_modules/],
+        use: [
+          {
+            loader: 'ts-loader'
+          }
+        ]
+      }
+    ]
+  }
+};
 
 const pluginConfig: Cypress.PluginConfig = async (on, config) => {
-  
+  on('file:preprocessor', wp({
+    webpackOptions
+  }));
+
+  require('@cypress/code-coverage/task')(on, config)
+
   // Enable component testing, you can safely remove this
   // if you don't plan to use Cypress for component tests
   if (config.testingType === 'component') {

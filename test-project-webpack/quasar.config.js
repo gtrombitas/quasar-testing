@@ -59,7 +59,19 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
-
+      extendWebpack (cfg, { isServer, isClient }) {
+        cfg.module.rules.push({
+          test: /\.(js|ts|vue)$/,
+          loader: '@jsdevtools/coverage-istanbul-loader',
+          options: { esModules: true },
+          enforce: 'post',
+          include: require('path').join(__dirname, 'src'),
+          exclude: [
+            /\.(e2e|spec)\.(js|ts)$/,
+            /node_modules/,
+          ]
+        })
+      },
       // transpile: false,
       // publicPath: '/',
 
