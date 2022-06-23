@@ -40,10 +40,21 @@ module.exports = async function (api) {
         );
       });
     } else {
-      // TODO: add webpack code coverage support
-      // See https://www.npmjs.com/package/istanbul-instrumenter-loader
-      // https://github.com/vuejs/vue-cli/issues/1363#issuecomment-405352542
-      // https://github.com/akoidan/vue-webpack-typescript
+      if (api.hasWebpack === true) {
+        api.extendWebpack((cfg, { isClient, isServer }, api) => {
+          cfg.module.rules.push({
+            test: /\.(js|ts|vue)$/,
+            loader: '@jsdevtools/coverage-istanbul-loader',
+            options: { esModules: true },
+            enforce: 'post',
+            include: require('path').join(__dirname, 'src'),
+            exclude: [
+              /\.(e2e|spec)\.(js|ts)$/,
+              /node_modules/,
+            ]
+          });
+        });
+      }
     }
   }
 };
